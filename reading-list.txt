@@ -1,0 +1,7 @@
+Agile Principle Patterns and Practices
+Growing Object Oriented Software Guided By Tests
+Patterns of Enterprise Application Architecture
+Head First OOAD
+Head First Design Patterns
+Test Driven Development
+Domain Driven Design
