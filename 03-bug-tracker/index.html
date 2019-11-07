@@ -42,8 +42,8 @@
         (done) 2. List the added bugs
         (done) 3. Toggle the 'closed' status of any bug
         (done) 4. Remove closed bugs
-        5. Display stats ( # of closed bugs / total # of bugs)
-        6. Filter the bugs
+        (done) 5. Display stats ( # of closed bugs / total # of bugs)
+        (done) 6. Filter the bugs
         7. Sort the bugs
         8. Improvise the bug Display
         9. Persist the bugs in the local storage
@@ -125,10 +125,10 @@
         </section>
         <section class="filter">
             <label for="">Search : </label>
-            <input type="text" name="" id="">
+            <input type="text" ng-model="searchBugBy.name">
             <label for="">Closed ? :</label>
-            <input type="checkbox" name="" id="">
-            <input type="button" value="Clear">
+            <input type="checkbox" ng-model="searchBugBy.isClosed">
+            <input type="button" value="Clear" ng-click="searchBugBy=''">
         </section>
         <section class="sort">
             <label for="">Order By :</label>
@@ -146,13 +146,13 @@
         </section>
         <section class="list">
             <ol>
-                <li ng-repeat="bug in bugsList track by $index">
+                <li ng-repeat="bug in ( bugsList | filter:searchBugBy ) track by $index ">
                     <span 
                         class="bugname" 
                         ng-click="onBugNameClick(bug)"
                         ng-class="{closed : bug.isClosed}"
                     >
-                        {{bug}}
+                        {{bug.name}}
                     </span>
                     <div class="datetime">[Created At]</div>
                 </li>
