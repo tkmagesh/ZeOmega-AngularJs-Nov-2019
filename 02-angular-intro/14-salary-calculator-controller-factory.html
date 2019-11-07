@@ -89,7 +89,7 @@
                     <td ng-bind="model.hra" id="tdHra">[HRA]</td>
                     <td ng-bind="model.da" id="tdDa">[DA]</td>
                     <td ng-bind="model.tax" id="tdTax">[Tax]</td>
-                    <td ng-bind="model.salary" id="tdSalary">[Salary]</td>
+                    <td id="tdSalary">{{model.salary | currency:'INR'}}</td>
                 </tr>
             </table>
         </div>
