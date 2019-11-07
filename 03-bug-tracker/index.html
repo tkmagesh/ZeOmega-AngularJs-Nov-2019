@@ -51,16 +51,27 @@
         11. Persist the bugs in the server
         12. Make the bugs accessible using unique urls
     </script>
+    <script src="angular.js"></script>
+    <script>
+        var bugTrackerApp = angular.module('bugTrackerApp', []);
+        bugTrackerApp.controller('bugsController', function($scope){
+            $scope.newBugName='';
+            $scope.bugsList = [];
+            $scope.onAddNewClick=function(){
+                $scope.bugsList.push($scope.newBugName);    
+            };
 
+        })
+    </script>
 </head>
-<body>
+<body ng-app="bugTrackerApp">
     <h1>Bug Tracker</h1>
     <hr>
-    <div>
+    <div ng-controller="bugsController">
         <section class="stats">
             <span class="closed">1</span>
             <span> / </span>
-            <span>2</span>
+            <span>{{bugsList.length}}</span>
         </section>
         <section class="filter">
             <label for="">Search : </label>
@@ -80,8 +91,8 @@
         </section>
         <section class="edit">
             <label for="">Bug Name :</label>
-            <input type="text" name="" id="">
-            <input type="button" value="Add New">
+            <input type="text" name="" id="" ng-model="newBugName">
+            <input type="button" value="Add New" ng-click="onAddNewClick()">
         </section>
         <section class="list">
             <ol>
