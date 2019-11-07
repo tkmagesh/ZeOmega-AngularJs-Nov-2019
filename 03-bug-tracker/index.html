@@ -77,6 +77,12 @@
                 for(var index = $scope.bugsList.length-1; index >= 0; index--)
                     if ($scope.bugsList[index].isClosed)
                         $scope.bugsList.splice(index, 1);
+            };
+
+            $scope.getClosedCount = function () {
+                return $scope.bugsList.reduce(function(result, bug){
+                    return bug.isClosed ? ++result : result;
+                }, 0)
             }
         });
     </script>
@@ -86,7 +92,7 @@
     <hr>
     <div ng-controller="bugsController">
         <section class="stats">
-            <span class="closed">1</span>
+            <span class="closed">{{getClosedCount()}}</span>
             <span> / </span>
             <span>{{bugsList.length}}</span>
         </section>
