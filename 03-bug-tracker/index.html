@@ -44,8 +44,8 @@
         (done) 4. Remove closed bugs
         (done) 5. Display stats ( # of closed bugs / total # of bugs)
         (done) 6. Filter the bugs
-        7. Sort the bugs
-        8. Improvise the bug Display
+        (done) 7. Sort the bugs
+        (done) 8. Improvise the bug Display
         9. Persist the bugs in the local storage
         10. Display 'createdAt' for each bug
         11. Persist the bugs in the server
@@ -112,6 +112,12 @@
                 }, 0)
             }
         });
+
+        bugTrackerApp.filter('trimText', function(){
+            return function(text, maxLength){
+                return text.length <= maxLength ? text : text.substr(0,maxLength) + '...';
+            };
+        });
     </script>
 </head>
 <body ng-app="bugTrackerApp">
@@ -128,16 +134,16 @@
             <input type="text" ng-model="searchBugBy.name">
             <label for="">Closed ? :</label>
             <input type="checkbox" ng-model="searchBugBy.isClosed">
-            <input type="button" value="Clear" ng-click="searchBugBy=''">
+            <input type="button" value="Clear" ng-click="searchBugBy.isClosed=''">
         </section>
         <section class="sort">
             <label for="">Order By :</label>
-            <select name="" id="">
+            <select ng-model="sortBugBy">
                 <option value="name">Name</option>
                 <option value="isClosed">Status</option>
             </select>
             <label for="">Descending ? :</label>
-            <input type="checkbox" name="" id="">
+            <input type="checkbox" ng-model="sortBugDesc">
         </section>
         <section class="edit">
             <label for="">Bug Name :</label>
@@ -146,13 +152,13 @@
         </section>
         <section class="list">
             <ol>
-                <li ng-repeat="bug in ( bugsList | filter:searchBugBy ) track by $index ">
+                <li ng-repeat="bug in ( bugsList | filter:searchBugBy | orderBy:sortBugBy:sortBugDesc) track by $index ">
                     <span 
                         class="bugname" 
                         ng-click="onBugNameClick(bug)"
                         ng-class="{closed : bug.isClosed}"
                     >
-                        {{bug.name}}
+                        {{bug.name | trimText:40}}
                     </span>
                     <div class="datetime">[Created At]</div>
                 </li>
