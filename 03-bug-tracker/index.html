@@ -54,20 +54,32 @@
     <script src="angular.js"></script>
     <script>
         var bugTrackerApp = angular.module('bugTrackerApp', []);
-        bugTrackerApp.controller('bugsController', function($scope){
+        bugTrackerApp.factory('bugOperations', function(){
+            var bugOperations = {
+                createNew : function(bugName){
+                    var newBug = {
+                        name: bugName,
+                        isClosed: false
+                    };
+                    return newBug;
+                },
+                toggle(bug){
+                    bug.isClosed = !bug.isClosed;
+                }
+            };
+            return bugOperations;
+        })
+        bugTrackerApp.controller('bugsController', function($scope, bugOperations){
             $scope.newBugName='';
             $scope.bugsList = [];
 
             $scope.onAddNewClick=function(){
-                var newBug = {
-                    name : $scope.newBugName,
-                    isClosed : false
-                };
+               var newBug = bugOperations.createNew($scope.newBugName);
                 $scope.bugsList.push(newBug);    
             };
 
             $scope.onBugNameClick = function(bug){
-                bug.isClosed = !bug.isClosed;
+                bugOperations.toggle(bug);
             };
 
             $scope.onRemoveClosedClick = function(){
