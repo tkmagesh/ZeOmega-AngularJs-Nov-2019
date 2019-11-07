@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Salary Calculator</title>
+    <style>
+        body{
+            margin-left: 50px;
+        }
+        .field{
+            margin-bottom: 10px;
+        }
+        label{
+            display : block;
+        }
+        td{
+            padding-right: 10px;
+            font-size: 18pt;
+        }
+    </style>
+    <script src="jquery-3.4.1.js"></script>
+    <script src="angular.js"></script>
+    <script>
+        String.prototype.toInt = function(){
+            return parseInt(this, 10);
+        }
+       
+
+        //creating a module
+        var myApp = angular.module("myApp", []);
+
+        myApp.run(function ($rootScope) {
+            $rootScope.title = 'Salary Calculator App';
+        });
+
+        myApp.controller('salaryCalculatorController', function($scope, calculator){
+            $scope.updateCalculator = function(){
+                $scope.model.calculate();
+            }
+            $scope.model = calculator;
+        });
+
+        myApp.factory('calculator', function(){
+             var salaryCalculator = {
+                basic: 0,
+                hra: 0,
+                da: 0,
+                tax: 0,
+                salary: 0,
+                calculate: function () {
+                    var gross = this.basic + this.hra + this.da;
+                    var net = gross * ((100 - this.tax) / 100);
+                    this.salary = net;
+                }
+            };
+            return salaryCalculator;
+        })
+    </script>
+</head>
+<body ng-app="myApp">
+    <h1>{{title}}</h1>
+    <hr>
+    <section ng-controller="salaryCalculatorController">
+        <div class="field">
+            <label for="">Basic :</label>
+            <input type="number" name="" id="txtBasic" ng-model="model.basic" ng-change="updateCalculator()">
+        </div>
+        <div class="field">
+            <label for="">HRA :</label>
+            <input type="number" name="" id="txtHra" ng-model="model.hra">
+        </div>
+        <div class="field">
+            <label for="">DA :</label>
+            <input type="number" name="" id="txtDa" ng-model="model.da">
+        </div>
+        <div class="field">
+            <label for="">Tax :</label>
+            <input type="range" name="" id="rangeTax" min="0" max="30" value="0" ng-model="model.tax" ng-change="updateCalculator()">
+        </div>
+        <div class="field">
+            <input type="button" value="Calculate" id="btnCalculate" ng-click="model.calculate()">
+        </div>
+        <div class="field">
+            <table>
+                <tr>
+                    <td ng-bind="model.basic" id="tdBasic">[Basic]</td>
+                    <td ng-bind="model.hra" id="tdHra">[HRA]</td>
+                    <td ng-bind="model.da" id="tdDa">[DA]</td>
+                    <td ng-bind="model.tax" id="tdTax">[Tax]</td>
+                    <td ng-bind="model.salary" id="tdSalary">[Salary]</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</body>
+</html>
