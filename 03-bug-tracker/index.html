@@ -54,7 +54,8 @@
     <script src="angular.js"></script>
     <script>
         var bugTrackerApp = angular.module('bugTrackerApp', []);
-        bugTrackerApp.factory('bugOperations', function(){
+
+        /* bugTrackerApp.factory('bugOperations', function(){
             var bugOperations = {
                 createNew : function(bugName){
                     var newBug = {
@@ -68,7 +69,21 @@
                 }
             };
             return bugOperations;
-        })
+        }) */
+
+        bugTrackerApp.service('bugOperations', function () {
+            this.createNew = function (bugName) {
+                var newBug = {
+                    name: bugName,
+                    isClosed: false
+                };
+                return newBug;
+            };
+            this.toggle = function(bug) {
+                bug.isClosed = !bug.isClosed;
+            };
+        });
+
         bugTrackerApp.controller('bugsController', function($scope, bugOperations){
             $scope.newBugName='';
             $scope.bugsList = [];
