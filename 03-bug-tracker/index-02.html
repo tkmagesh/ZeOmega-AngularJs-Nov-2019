@@ -109,8 +109,12 @@
             }
         });
 
-        bugTrackerApp.service('bugStorage', function($http){
-            var serviceEndPoint = 'http://localhost:3000/bugs';
+        bugTrackerApp.value('appConfig', {
+            serviceEndPoint : 'http://localhost:3000/bugs'
+        });
+
+        bugTrackerApp.service('bugStorage', function($http, appConfig){
+            var serviceEndPoint = appConfig.serviceEndPoint;
 
             this.save = function(bugData){
                 if (bugData.id === 0){
