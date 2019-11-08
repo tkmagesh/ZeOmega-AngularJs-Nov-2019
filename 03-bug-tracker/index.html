@@ -63,7 +63,7 @@
                     - key(index) => key at index
                     - length
 
-                    
+
         10. Display 'createdAt' for each bug
         11. Persist the bugs in the server
         12. Make the bugs accessible using unique urls
@@ -88,22 +88,56 @@
             return bugOperations;
         }) */
 
-        bugTrackerApp.service('bugOperations', function () {
+        bugTrackerApp.service('bugOperations', function (bugStorage) {
             this.createNew = function (bugName) {
                 var newBug = {
+                    id : 0,
                     name: bugName,
                     isClosed: false
                 };
+                bugStorage.save(newBug);
                 return newBug;
             };
             this.toggle = function(bug) {
                 bug.isClosed = !bug.isClosed;
+                bugStorage.save(bug);
             };
+            this.getAll = function(){
+                return bugStorage.getAll();
+            };
+            this.remove = function(bug){
+                bugStorage.remove(bug);
+            }
         });
+
+        bugTrackerApp.service('bugStorage', function(){
+            var currentBugId = 0;
+            var storage = window.localStorage;
+
+            this.save = function(newBug){
+                if (newBug.id === 0)
+                    newBug.id = ++currentBugId;
+                storage.setItem(newBug.id, JSON.stringify(newBug));    
+            }
+            this.getAll = function () {
+                var result = [];
+                for (var index = 0, count = storage.length; index < count; index++) {
+                    var key = storage.key(index),
+                        rawData = storage.getItem(key),
+                        bug = JSON.parse(rawData);
+                    currentBugId = currentBugId > bug.id ? currentBugId : bug.id;
+                    result.push(bug);
+                }
+                return result;
+            }
+            this.remove = function(bug){
+                storage.removeItem(bug.id);
+            }
+        })
 
         bugTrackerApp.controller('bugsController', function($scope, bugOperations){
             $scope.newBugName='';
-            $scope.bugsList = [];
+            $scope.bugsList = bugOperations.getAll();
 
             $scope.onAddNewClick=function(){
                var newBug = bugOperations.createNew($scope.newBugName);
@@ -119,8 +153,10 @@
                     return !bug.isClosed;
                 }); */
                 for(var index = $scope.bugsList.length-1; index >= 0; index--)
-                    if ($scope.bugsList[index].isClosed)
+                    if ($scope.bugsList[index].isClosed){
+                        bugOperations.remove($scope.bugsList[index])
                         $scope.bugsList.splice(index, 1);
+                    }
             };
 
             $scope.getClosedCount = function () {
@@ -130,6 +166,7 @@
             }
 
             $scope.onDeleteClick = function(bugToDelete){
+                bugOperations.remove(bugToDelete);
                 $scope.bugsList = $scope.bugsList.filter(function(bug) {
                     return bug !== bugToDelete;
                 });
