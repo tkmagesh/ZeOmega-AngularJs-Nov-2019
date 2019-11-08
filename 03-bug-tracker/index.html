@@ -111,6 +111,12 @@
                     return bug.isClosed ? ++result : result;
                 }, 0)
             }
+
+            $scope.onDeleteClick = function(bugToDelete){
+                $scope.bugsList = $scope.bugsList.filter(function(bug) {
+                    return bug !== bugToDelete;
+                });
+            };
         });
 
         bugTrackerApp.filter('trimText', function(){
@@ -118,6 +124,13 @@
                 return text.length <= maxLength ? text : text.substr(0,maxLength) + '...';
             };
         });
+        bugTrackerApp.filter('closedCount', function(){
+            return function(bugs){
+                return bugs.reduce(function(result, bug){
+                    return bug.isClosed ? ++result : result;
+                }, 0);
+            }
+        })
     </script>
 </head>
 <body ng-app="bugTrackerApp">
@@ -125,7 +138,7 @@
     <hr>
     <div ng-controller="bugsController">
         <section class="stats">
-            <span class="closed">{{getClosedCount()}}</span>
+            <span class="closed">{{bugsList | closedCount}}</span>
             <span> / </span>
             <span>{{bugsList.length}}</span>
         </section>
@@ -161,6 +174,7 @@
                         {{bug.name | trimText:40}}
                     </span>
                     <div class="datetime">[Created At]</div>
+                    <input type="button" value="Delete" ng-click="onDeleteClick(bug)">
                 </li>
             </ol>
             <input type="button" value="Remove Closed" ng-click="onRemoveClosedClick()">
